@@ -10,6 +10,15 @@ app.use(cors());
 app.use(express.json());
 
 
+const ourBrands =[
+  {id:1, name:"Elegant", img:"https://i.ibb.co/D8CP7Qw/elegant.jpg"},
+  {id:2, name:"Khansa", img:"https://i.ibb.co/C92W5yP/khansa.jpg"},
+  {id:3, name:"Libura", img:"https://i.ibb.co/7jmt1kp/libura.jpg"},
+  {id:4, name:"Lines", img:"https://i.ibb.co/9yMg8WF/Lines.jpg"},
+  {id:5, name:"Novaline", img:"https://i.ibb.co/3m9mSMy/novaline.jpg"},
+  {id:6, name:"Sama", img:"https://i.ibb.co/nzST2Xb/sama.jpg"},
+]
+
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.skku3ga.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -41,6 +50,9 @@ app.get('/',(req,res)=>{
     res.send("server side is working")
 });
 
+app.get('/ourBrands',(req,res)=>{
+  res.send(ourBrands)
+})
 
 app.listen(port, ()=>{
     console.log(`server side is running on port ${port}`)
