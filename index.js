@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port= process.env.PORT || 5000;
 
@@ -37,20 +37,25 @@ async function run() {
 
     const database = client.db("productsDB");
     const products = database.collection("products");
-
+// all products loading from DataBase and send to clientSide
     app.get('/products', async(req,res)=>{
       const cursor=products.find()
       const allProducts= await cursor.toArray();
       res.send(allProducts);
     })
-
+// single data loading from dataBase and sending to clientSide
+    app.get('/productdetails/:_id',async(req,res)=>{
+      const id= req.params._id
+      const query = { _id: new ObjectId(id) };
+      const product = await products.findOne(query);
+      res.send(product);
+    })
     app.post('/addproduct', async(req,res)=>{
       const product=req.body;
       console.log(product)
       const result = await products.insertOne(product);
       res.send(result);
     });
-
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
