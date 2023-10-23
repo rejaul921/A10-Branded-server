@@ -50,6 +50,37 @@ async function run() {
       const product = await products.findOne(query);
       res.send(product);
     })
+
+    // single data loading from database for update
+    app.get('/updateproduct/:_id', async(req,res)=>{
+      const id=req.params._id
+      const query={_id:new ObjectId(id)};
+      const product=await products.findOne(query);
+      res.send(product);
+    })
+    // for single data update
+    app.put('/updateproduct/:_id', async(req,res)=>{
+      const id=req.params._id;
+      const updateProduct=req.body;
+      console.log(updateProduct);
+      const query={_id:new ObjectId(id)};
+      const options = { upsert: true };
+      const updatedProduct={
+        $set:{
+          // name, photo, brandname, product_type, price, description, rating
+          name:updateProduct.name,
+          photo:updateProduct.photo,
+          brandname:updateProduct.brandname,
+          product_type:updateProduct.product_type,
+          price:updateProduct.price,
+          description:updateProduct.description,
+          rating:updateProduct.rating,
+        }
+      }
+      const result= await products.updateOne(query,updatedProduct,options);
+      res.send(result);
+    })
+
     app.post('/addproduct', async(req,res)=>{
       const product=req.body;
       console.log(product)
