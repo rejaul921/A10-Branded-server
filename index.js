@@ -43,7 +43,7 @@ async function run() {
       const allProducts= await cursor.toArray();
       res.send(allProducts);
     })
-// single data loading from dataBase and sending to clientSide
+// single data loading from dataBase and sending to clientSide for product details
     app.get('/productdetails/:_id',async(req,res)=>{
       const id= req.params._id
       const query = { _id: new ObjectId(id) };
@@ -80,14 +80,36 @@ async function run() {
       const result= await products.updateOne(query,updatedProduct,options);
       res.send(result);
     })
-
+// adding product in database
     app.post('/addproduct', async(req,res)=>{
       const product=req.body;
       console.log(product)
       const result = await products.insertOne(product);
       res.send(result);
     });
+    // adding to cart data sending to database
+    const cartProducts = database.collection("cartProducts");
 
+    app.post('/addToCart', async(req,res)=>{
+      const product=req.body;
+      console.log(product)
+      const result = await cartProducts.insertOne(product);
+      res.send(result);
+    });
+
+    // reading myCart data and sending to client side
+    app.get('/myCart',async(req,res)=>{
+      const cursor = cartProducts.find();
+      const product = await cursor.toArray();
+      res.send(product);
+    })
+    // deleting a product from my cart
+    app.delete('/myCart/:id', async(req,res)=>{
+      const id=req.params.id;
+      const query={_id:new ObjectId(id)}
+      const result= await cartProducts.deleteOne(query);
+      res.send(result);
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
